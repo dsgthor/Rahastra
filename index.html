@@ -12,23 +12,25 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #000000;
             color: #ffffff;
             min-height: 100vh;
-            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
         .container {
             max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 20px 0;
         }
 
         .header h1 {
@@ -39,7 +41,7 @@
         }
 
         .header p {
-            color: #999;
+            color: #cccccc;
             font-size: 1.1rem;
         }
 
@@ -59,49 +61,23 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(229, 57, 53, 0.05);
+            margin-bottom: 20px;
         }
 
-        .upload-area:hover, .upload-area.dragover {
+        .upload-area:hover {
+            background: rgba(229, 57, 53, 0.1);
             border-color: #ff1744;
-            background: rgba(255, 23, 68, 0.1);
-            box-shadow: 0 0 20px rgba(229, 57, 53, 0.3);
+        }
+
+        .upload-area.dragover {
+            background: rgba(229, 57, 53, 0.2);
+            border-color: #ff1744;
         }
 
         .upload-icon {
             font-size: 3rem;
             color: #e53935;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            background: transparent;
-            border: 2px solid #e53935;
-            color: #e53935;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background: #e53935;
-            color: #000;
-            box-shadow: 0 0 15px rgba(229, 57, 53, 0.5);
-        }
-
-        .btn-primary {
-            background: #e53935;
-            color: #000;
-        }
-
-        .btn-primary:hover {
-            background: #ff1744;
-            box-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -111,73 +87,65 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #e53935;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 12px 16px;
+            background: transparent;
             border: 1px solid rgba(229, 57, 53, 0.5);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            font-size: 1rem;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
             outline: none;
             border-color: #e53935;
-            box-shadow: 0 0 10px rgba(229, 57, 53, 0.3);
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.2);
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+        .form-control::placeholder {
+            color: #888888;
         }
 
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #e53935;
-        }
-
-        .file-list {
-            margin-top: 20px;
-        }
-
-        .file-item {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(229, 57, 53, 0.2);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .file-icon {
-            font-size: 1.5rem;
+        .btn {
+            background: transparent;
+            border: 2px solid #e53935;
             color: #e53935;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
 
-        .file-details h4 {
-            color: #fff;
-            margin-bottom: 5px;
+        .btn:hover {
+            background: #e53935;
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(229, 57, 53, 0.4);
         }
 
-        .file-details p {
-            color: #999;
-            font-size: 0.9rem;
+        .btn-primary {
+            background: #e53935;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #ff1744;
+            border-color: #ff1744;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .progress-bar {
@@ -196,43 +164,78 @@
             transition: width 0.3s ease;
         }
 
-        .result-section {
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(229, 57, 53, 0.2);
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .file-meta {
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .qr-code {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #e53935;
+            border-radius: 8px;
+            padding: 5px;
+            background: #ffffff;
+        }
+
+        .results-section {
             margin-top: 30px;
         }
 
         .result-item {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(229, 57, 53, 0.3);
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .result-header {
+        .checkbox-group {
             display: flex;
-            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 8px;
         }
 
-        .result-links {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .qr-container {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .qr-code {
-            border: 3px solid #e53935;
-            border-radius: 8px;
-            padding: 10px;
-            background: #fff;
-            display: inline-block;
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #e53935;
         }
 
         .download-section {
@@ -253,18 +256,18 @@
 
         .file-preview iframe {
             width: 100%;
-            height: 500px;
+            height: 400px;
             border: none;
         }
 
         .file-preview textarea {
             width: 100%;
             height: 300px;
-            background: rgba(255, 255, 255, 0.05);
+            background: #111111;
+            color: #ffffff;
             border: none;
-            color: #fff;
             padding: 15px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             resize: vertical;
         }
 
@@ -273,7 +276,7 @@
             top: 20px;
             right: 20px;
             background: #e53935;
-            color: #fff;
+            color: #ffffff;
             padding: 15px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -286,62 +289,59 @@
             transform: translateX(0);
         }
 
-        .toast.error {
-            background: #d32f2f;
-        }
-
-        .toast.success {
-            background: #2e7d32;
-        }
-
         .hidden {
-            display: none;
+            display: none !important;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .text-center {
+            text-align: center;
         }
 
-        .expiry-countdown {
-            color: #ff1744;
-            font-weight: bold;
-            margin-top: 10px;
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
         }
 
         .copy-btn {
-            background: transparent;
-            border: 1px solid #e53935;
-            color: #e53935;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 12px;
+            padding: 6px 12px;
         }
 
-        .copy-btn:hover {
-            background: #e53935;
-            color: #000;
+        .countdown {
+            color: #ff1744;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 0 15px;
             }
             
             .header h1 {
                 font-size: 2rem;
             }
             
-            .result-links {
-                flex-direction: column;
+            .card {
+                padding: 20px;
             }
             
-            .result-header {
+            .upload-area {
+                padding: 40px 15px;
+            }
+            
+            .file-item {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .file-actions {
+                width: 100%;
+                justify-content: space-between;
             }
         }
     </style>
@@ -349,8 +349,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 DropVault</h1>
-            <p>Zero-Knowledge File Sharing with End-to-End Encryption</p>
+            <h1>🔒 DropVault</h1>
+            <p>Zero-Knowledge File Sharing</p>
         </div>
 
         <!-- Upload Section -->
@@ -361,81 +361,183 @@
                 <p>Your files are encrypted client-side before upload</p>
                 <input type="file" id="fileInput" multiple style="display: none;">
             </div>
-            
+
             <div class="file-list" id="fileList"></div>
-            
+
             <div class="form-group">
-                <label for="password">🔒 Optional Password Protection</label>
-                <input type="password" id="password" class="form-control" placeholder="Enter password to encrypt files">
+                <label for="password">Password (Optional)</label>
+                <input type="password" id="password" class="form-control" placeholder="Leave empty for public access">
             </div>
-            
+
             <div class="form-group">
-                <label for="note">📝 Optional Note</label>
-                <textarea id="note" class="form-control" rows="3" placeholder="Add a private note (will be encrypted)"></textarea>
+                <label for="note">Note (Optional)</label>
+                <textarea id="note" class="form-control" rows="3" placeholder="Add a private note..."></textarea>
             </div>
-            
+
             <div class="checkbox-group">
-                <input type="checkbox" id="oneTime">
-                <label for="oneTime">🔥 One-time download (delete after first access)</label>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="oneTime">
+                    <label for="oneTime">One-time download</label>
+                </div>
             </div>
-            
+
             <div class="form-group">
-                <label for="expiry">⏰ Auto-expire</label>
+                <label for="expiry">Auto-expire</label>
                 <select id="expiry" class="form-control">
-                    <option value="">No expiry</option>
-                    <option value="3600">1 hour</option>
-                    <option value="86400">24 hours</option>
-                    <option value="604800">7 days</option>
-                    <option value="2592000">30 days</option>
+                    <option value="">Never</option>
+                    <option value="1">1 hour</option>
+                    <option value="24">24 hours</option>
+                    <option value="168">7 days</option>
+                    <option value="720">30 days</option>
                 </select>
             </div>
-            
+
             <div class="progress-bar hidden" id="progressBar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            
-            <button class="btn btn-primary" id="uploadBtn" disabled>🚀 Upload Files</button>
-        </div>
 
-        <!-- Results Section -->
-        <div id="resultSection" class="hidden">
-            <div class="card">
-                <h3>✅ Upload Complete</h3>
-                <div id="resultsList"></div>
-                <button class="btn" onclick="location.reload()">📤 Upload More Files</button>
+            <button class="btn btn-primary" id="uploadBtn">Upload Files</button>
+
+            <div class="results-section hidden" id="resultsSection">
+                <h3>Upload Complete</h3>
+                <div id="uploadResults"></div>
+                <button class="btn mt-20" onclick="location.reload()">Upload Another</button>
             </div>
         </div>
 
         <!-- Download Section -->
         <div id="downloadSection" class="card hidden">
-            <div class="download-section">
-                <h3>📥 File Download</h3>
+            <div class="text-center">
+                <h2>📥 Download File</h2>
                 <div id="fileMetadata"></div>
+                
                 <div id="passwordPrompt" class="hidden">
                     <div class="form-group">
-                        <label for="downloadPassword">🔒 Enter Password</label>
-                        <input type="password" id="downloadPassword" class="form-control" placeholder="Enter password to decrypt">
+                        <label for="downloadPassword">Enter Password</label>
+                        <input type="password" id="downloadPassword" class="form-control" placeholder="Enter file password">
                     </div>
-                    <button class="btn btn-primary" id="decryptBtn">🔓 Decrypt & Download</button>
+                    <button class="btn btn-primary" id="decryptBtn">Decrypt & Download</button>
                 </div>
+
                 <div id="downloadContent" class="hidden">
                     <div id="filePreview" class="file-preview"></div>
-                    <div id="decryptedNote"></div>
-                    <button class="btn btn-primary" id="downloadFileBtn">💾 Download File</button>
+                    <div id="fileNote" class="mb-20"></div>
+                    <button class="btn btn-primary" id="downloadBtn">Download File</button>
                 </div>
-                <div id="expiryCountdown" class="expiry-countdown"></div>
+
+                <div id="expiredMessage" class="hidden">
+                    <h3 style="color: #ff1744;">⚠️ File Expired or Not Found</h3>
+                    <p>This file has expired or doesn't exist.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script>
-        // Global state
-        let selectedFiles = [];
-        let uploadedFiles = [];
-        let fileStorage = {}; // Simulated backend storage
+        // In-memory storage for the demo (simulating backend)
+        const fileStorage = new Map();
         
-        // Utility functions
+        // Crypto utilities
+        class CryptoUtils {
+            static async generateKey() {
+                return await crypto.subtle.generateKey(
+                    { name: 'AES-GCM', length: 256 },
+                    true,
+                    ['encrypt', 'decrypt']
+                );
+            }
+
+            static async deriveKey(password, salt) {
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(password),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                return await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    true,
+                    ['encrypt', 'decrypt']
+                );
+            }
+
+            static async encryptFile(file, key, iv) {
+                const arrayBuffer = await file.arrayBuffer();
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    arrayBuffer
+                );
+                return encrypted;
+            }
+
+            static async decryptFile(encryptedData, key, iv) {
+                return await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    encryptedData
+                );
+            }
+
+            static async exportKey(key) {
+                const exported = await crypto.subtle.exportKey('raw', key);
+                return Array.from(new Uint8Array(exported));
+            }
+
+            static async importKey(keyData) {
+                return await crypto.subtle.importKey(
+                    'raw',
+                    new Uint8Array(keyData),
+                    { name: 'AES-GCM' },
+                    true,
+                    ['encrypt', 'decrypt']
+                );
+            }
+
+            static generateIV() {
+                return crypto.getRandomValues(new Uint8Array(12));
+            }
+
+            static generateSalt() {
+                return crypto.getRandomValues(new Uint8Array(16));
+            }
+
+            static generateId() {
+                return Array.from(crypto.getRandomValues(new Uint8Array(16)))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            }
+
+            static arrayToBase64(array) {
+                return btoa(String.fromCharCode(...array));
+            }
+
+            static base64ToArray(base64) {
+                return Array.from(atob(base64)).map(c => c.charCodeAt(0));
+            }
+        }
+
+        // File size formatter
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Toast notification
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -448,189 +550,148 @@
                 setTimeout(() => document.body.removeChild(toast), 300);
             }, 3000);
         }
-        
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 B';
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        function getFileIcon(filename) {
-            const ext = filename.split('.').pop().toLowerCase();
-            const icons = {
-                'pdf': '📄', 'doc': '📄', 'docx': '📄',
-                'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️',
-                'mp4': '🎥', 'avi': '🎥', 'mov': '🎥',
-                'mp3': '🎵', 'wav': '🎵', 'flac': '🎵',
-                'zip': '📦', 'rar': '📦', '7z': '📦',
-                'txt': '📝', 'json': '📝', 'js': '📝', 'html': '📝'
-            };
-            return icons[ext] || '📎';
-        }
-        
-        // Cryptographic functions
-        async function generateKey() {
-            return await crypto.subtle.generateKey(
-                { name: 'AES-GCM', length: 256 },
-                true,
-                ['encrypt', 'decrypt']
-            );
-        }
-        
-        async function deriveKeyFromPassword(password, salt) {
-            const encoder = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(password),
-                'PBKDF2',
-                false,
-                ['deriveBits', 'deriveKey']
-            );
+
+        // QR Code generation
+        function generateQR(text) {
+            const qr = qrcode(0, 'M');
+            qr.addData(text);
+            qr.make();
             
-            return await crypto.subtle.deriveKey(
-                {
-                    name: 'PBKDF2',
-                    salt: salt,
-                    iterations: 100000,
-                    hash: 'SHA-256'
-                },
-                keyMaterial,
-                { name: 'AES-GCM', length: 256 },
-                true,
-                ['encrypt', 'decrypt']
-            );
-        }
-        
-        async function encryptFile(file, key, iv) {
-            const fileBuffer = await file.arrayBuffer();
-            return await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                fileBuffer
-            );
-        }
-        
-        async function decryptFile(encryptedData, key, iv) {
-            return await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                encryptedData
-            );
-        }
-        
-        async function exportKey(key) {
-            const exported = await crypto.subtle.exportKey('raw', key);
-            return Array.from(new Uint8Array(exported));
-        }
-        
-        async function importKey(keyArray) {
-            return await crypto.subtle.importKey(
-                'raw',
-                new Uint8Array(keyArray),
-                'AES-GCM',
-                true,
-                ['encrypt', 'decrypt']
-            );
-        }
-        
-        function arrayToBase64(array) {
-            return btoa(String.fromCharCode.apply(null, array));
-        }
-        
-        function base64ToArray(base64) {
-            return Array.from(atob(base64), c => c.charCodeAt(0));
-        }
-        
-        // File handling
-        function handleFileSelect(files) {
-            selectedFiles = Array.from(files);
-            displayFileList();
-            document.getElementById('uploadBtn').disabled = selectedFiles.length === 0;
-        }
-        
-        function displayFileList() {
-            const fileList = document.getElementById('fileList');
-            if (selectedFiles.length === 0) {
-                fileList.innerHTML = '';
-                return;
+            const canvas = document.createElement('canvas');
+            const size = 80;
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // White background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, size, size);
+            
+            const modules = qr.getModuleCount();
+            const cellSize = size / modules;
+            
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < modules; row++) {
+                for (let col = 0; col < modules; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    }
+                }
             }
             
-            fileList.innerHTML = selectedFiles.map((file, index) => `
-                <div class="file-item">
-                    <div class="file-info">
-                        <span class="file-icon">${getFileIcon(file.name)}</span>
-                        <div class="file-details">
-                            <h4>${file.name}</h4>
-                            <p>${formatFileSize(file.size)} • ${file.type || 'Unknown type'}</p>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="removeFile(${index})">❌</button>
-                </div>
-            `).join('');
+            return canvas.toDataURL();
         }
-        
+
+        // File upload handlers
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const resultsSection = document.getElementById('resultsSection');
+        const uploadResults = document.getElementById('uploadResults');
+
+        let selectedFiles = [];
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            selectedFiles = files;
+            displayFiles();
+        }
+
+        function displayFiles() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">${formatFileSize(file.size)} • ${file.type || 'Unknown'}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn" onclick="removeFile(${index})">Remove</button>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
         function removeFile(index) {
             selectedFiles.splice(index, 1);
-            displayFileList();
-            document.getElementById('uploadBtn').disabled = selectedFiles.length === 0;
+            displayFiles();
         }
-        
+
         // Upload functionality
-        async function uploadFiles() {
-            if (selectedFiles.length === 0) return;
-            
-            const progressBar = document.getElementById('progressBar');
-            const progressFill = document.getElementById('progressFill');
-            const uploadBtn = document.getElementById('uploadBtn');
-            
-            progressBar.classList.remove('hidden');
+        uploadBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) {
+                showToast('Please select files to upload', 'error');
+                return;
+            }
+
             uploadBtn.disabled = true;
-            uploadBtn.textContent = '🔄 Encrypting & Uploading...';
+            progressBar.classList.remove('hidden');
             
             const password = document.getElementById('password').value;
             const note = document.getElementById('note').value;
             const oneTime = document.getElementById('oneTime').checked;
             const expiry = document.getElementById('expiry').value;
-            
-            uploadedFiles = [];
-            
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const file = selectedFiles[i];
-                progressFill.style.width = `${(i / selectedFiles.length) * 50}%`;
-                
+
+            const uploadPromises = selectedFiles.map(async (file, index) => {
                 try {
-                    const iv = crypto.getRandomValues(new Uint8Array(12));
-                    let key, salt = null;
-                    
+                    const iv = CryptoUtils.generateIV();
+                    let key, salt = null, keyForUrl = null;
+
                     if (password) {
-                        salt = crypto.getRandomValues(new Uint8Array(16));
-                        key = await deriveKeyFromPassword(password, salt);
+                        salt = CryptoUtils.generateSalt();
+                        key = await CryptoUtils.deriveKey(password, salt);
                     } else {
-                        key = await generateKey();
+                        key = await CryptoUtils.generateKey();
+                        keyForUrl = await CryptoUtils.exportKey(key);
                     }
-                    
-                    const encryptedFile = await encryptFile(file, key, iv);
+
+                    const encryptedData = await CryptoUtils.encryptFile(file, key, iv);
                     
                     let encryptedNote = null;
                     if (note) {
-                        const noteIv = crypto.getRandomValues(new Uint8Array(12));
-                        const noteBuffer = new TextEncoder().encode(note);
+                        const encoder = new TextEncoder();
+                        const noteBuffer = encoder.encode(note);
+                        const noteIV = CryptoUtils.generateIV();
                         const encryptedNoteBuffer = await crypto.subtle.encrypt(
-                            { name: 'AES-GCM', iv: noteIv },
+                            { name: 'AES-GCM', iv: noteIV },
                             key,
                             noteBuffer
                         );
                         encryptedNote = {
                             data: Array.from(new Uint8Array(encryptedNoteBuffer)),
-                            iv: Array.from(noteIv)
+                            iv: Array.from(noteIV)
                         };
                     }
-                    
-                    const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    const expiryTime = expiry ? Date.now() + (parseInt(expiry) * 1000) : null;
-                    
+
+                    const fileId = CryptoUtils.generateId();
+                    const expiryTime = expiry ? Date.now() + (parseInt(expiry) * 60 * 60 * 1000) : null;
+
                     const metadata = {
                         filename: file.name,
                         filetype: file.type,
@@ -643,123 +704,87 @@
                         iv: Array.from(iv),
                         encryptedNote: encryptedNote
                     };
-                    
-                    // Simulate backend storage
-                    fileStorage[fileId] = {
-                        encryptedData: Array.from(new Uint8Array(encryptedFile)),
-                        metadata: metadata
-                    };
-                    
-                    let downloadUrl;
-                    // Handle local file URLs properly
-                    const baseUrl = window.location.origin === 'null' ? 
-                        window.location.href.split('?')[0] : 
-                        `${window.location.origin}${window.location.pathname}`;
-                    
-                    if (password) {
-                        downloadUrl = `${baseUrl}?download=${fileId}`;
-                    } else {
-                        const exportedKey = await exportKey(key);
-                        const keyBase64 = arrayToBase64(exportedKey);
-                        downloadUrl = `${baseUrl}?download=${fileId}#${keyBase64}`;
-                    }
-                    
-                    uploadedFiles.push({
-                        filename: file.name,
-                        downloadUrl: downloadUrl,
+
+                    // Store in memory (simulating backend)
+                    fileStorage.set(fileId, {
+                        encryptedData: Array.from(new Uint8Array(encryptedData)),
                         metadata: metadata
                     });
+
+                    // Generate download URL
+                    const baseUrl = window.location.origin === 'null' 
+                        ? window.location.href.split('?')[0] 
+                        : window.location.origin + window.location.pathname;
                     
+                    const downloadUrl = keyForUrl 
+                        ? `${baseUrl}?download=${fileId}#${CryptoUtils.arrayToBase64(keyForUrl)}`
+                        : `${baseUrl}?download=${fileId}`;
+
+                    // Update progress
+                    const progress = ((index + 1) / selectedFiles.length) * 100;
+                    progressFill.style.width = `${progress}%`;
+
+                    return {
+                        fileId,
+                        filename: file.name,
+                        size: file.size,
+                        downloadUrl,
+                        hasPassword: !!password,
+                        expiryTime
+                    };
                 } catch (error) {
                     console.error('Upload error:', error);
-                    showToast(`Failed to upload ${file.name}`, 'error');
+                    throw error;
                 }
-                
-                progressFill.style.width = `${((i + 1) / selectedFiles.length) * 100}%`;
-            }
-            
-            setTimeout(() => {
+            });
+
+            try {
+                const results = await Promise.all(uploadPromises);
+                displayResults(results);
+                showToast('Files uploaded successfully!');
+            } catch (error) {
+                showToast('Upload failed: ' + error.message, 'error');
+            } finally {
+                uploadBtn.disabled = false;
                 progressBar.classList.add('hidden');
-                document.getElementById('uploadSection').classList.add('hidden');
-                document.getElementById('resultSection').classList.remove('hidden');
-                displayResults();
-                showToast(`Successfully uploaded ${uploadedFiles.length} file(s)!`);
-            }, 500);
-        }
-        
-        function displayResults() {
-            const resultsList = document.getElementById('resultsList');
+            }
+        });
+
+        function displayResults(results) {
+            uploadResults.innerHTML = '';
             
-            resultsList.innerHTML = uploadedFiles.map((file, index) => {
-                // Create QR code with proper error handling
-                let qrCodeHtml = '';
-                try {
-                    const qr = qrcode(0, 'M');
-                    qr.addData(file.downloadUrl);
-                    qr.make();
-                    qrCodeHtml = qr.createImgTag(4);
-                } catch (error) {
-                    console.error('QR code generation failed:', error);
-                    qrCodeHtml = `<div style="padding: 20px; text-align: center; color: #999;">QR Code generation failed</div>`;
-                }
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
                 
-                return `
-                    <div class="result-item">
-                        <div class="result-header">
-                            <h4>${getFileIcon(file.filename)} ${file.filename}</h4>
-                            <span class="file-details">
-                                ${formatFileSize(file.metadata.size)} • 
-                                ${file.metadata.hasPassword ? '🔒 Protected' : '🔓 No Password'} • 
-                                ${file.metadata.oneTime ? '🔥 One-time' : '♾️ Multiple'}
-                            </span>
-                        </div>
-                        <div class="result-links">
-                            <button class="btn copy-btn" onclick="copyToClipboard('${file.downloadUrl}')">📋 Copy Link</button>
-                            <a href="${file.downloadUrl}" class="btn" target="_blank">🔗 Open Link</a>
-                            <button class="btn copy-btn" onclick="shareFile('${file.downloadUrl}', '${file.filename}')">📤 Share</button>
-                        </div>
-                        <div class="qr-container">
-                            <div class="qr-code" id="qr-${index}"></div>
-                            <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">Scan to download</p>
-                        </div>
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.8rem; color: #ccc; word-break: break-all;">
-                            ${file.downloadUrl}
+                const qrDataUrl = generateQR(result.downloadUrl);
+                const expiryText = result.expiryTime 
+                    ? new Date(result.expiryTime).toLocaleString()
+                    : 'Never';
+                
+                resultItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <img src="${qrDataUrl}" class="qr-code" alt="QR Code">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="file-name">${result.filename}</div>
+                            <div class="file-meta">
+                                ${formatFileSize(result.size)} • 
+                                ${result.hasPassword ? '🔒 Password Protected' : '🔓 Public'} • 
+                                Expires: ${expiryText}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <input type="text" value="${result.downloadUrl}" class="form-control" readonly style="font-size: 12px;">
+                                <button class="btn copy-btn mt-10" onclick="copyToClipboard('${result.downloadUrl}')">Copy Link</button>
+                            </div>
                         </div>
                     </div>
                 `;
-            }).join('');
-            
-            // Generate QR codes after DOM is updated
-            uploadedFiles.forEach((file, index) => {
-                setTimeout(() => {
-                    generateQRCode(file.downloadUrl, `qr-${index}`);
-                }, 100);
+                uploadResults.appendChild(resultItem);
             });
+            
+            resultsSection.classList.remove('hidden');
         }
-        
-        function generateQRCode(url, containerId) {
-            try {
-                const qr = qrcode(0, 'M');
-                qr.addData(url);
-                qr.make();
-                
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.innerHTML = qr.createImgTag(4);
-                }
-            } catch (error) {
-                console.error('QR code generation failed:', error);
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.innerHTML = `
-                        <div style="padding: 20px; text-align: center; color: #999; border: 2px dashed #666; border-radius: 8px;">
-                            📱<br>QR Code<br>Generation Failed
-                        </div>
-                    `;
-                }
-            }
-        }
-        
+
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('Link copied to clipboard!');
@@ -767,459 +792,434 @@
                 showToast('Failed to copy link', 'error');
             });
         }
-        
+
         // Download functionality
-        async function handleDownload() {
+        function initDownload() {
             const urlParams = new URLSearchParams(window.location.search);
             const fileId = urlParams.get('download');
             
-            if (!fileId) return;
+            if (fileId) {
+                document.getElementById('uploadSection').classList.add('hidden');
+                document.getElementById('downloadSection').classList.remove('hidden');
+                loadFile(fileId);
+            }
+        }
+
+        async function loadFile(fileId) {
+            const fileData = fileStorage.get(fileId);
             
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('downloadSection').classList.remove('hidden');
-            
-            // Simulate API call
-            const fileData = fileStorage[fileId];
             if (!fileData) {
-                showToast('File not found or expired', 'error');
+                document.getElementById('expiredMessage').classList.remove('hidden');
                 return;
             }
-            
-            const { metadata } = fileData;
+
+            const { metadata, encryptedData } = fileData;
             
             // Check expiry
             if (metadata.expiry && Date.now() > metadata.expiry) {
-                delete fileStorage[fileId];
-                showToast('File has expired', 'error');
+                fileStorage.delete(fileId);
+                document.getElementById('expiredMessage').classList.remove('hidden');
                 return;
             }
+
+            // Display metadata
+            const fileMetadata = document.getElementById('fileMetadata');
+            const expiryText = metadata.expiry 
+                ? new Date(metadata.expiry).toLocaleString()
+                : 'Never';
             
-            displayFileMetadata(metadata);
-            
+            fileMetadata.innerHTML = `
+                <h3>${metadata.filename}</h3>
+                <p class="file-meta">
+                    ${formatFileSize(metadata.size)} • 
+                    ${metadata.hasPassword ? '🔒 Password Protected' : '🔓 Public'} • 
+                    Expires: ${expiryText}
+                </p>
+                ${metadata.expiry ? `<div class="countdown" id="countdown"></div>` : ''}
+            `;
+
+            // Start countdown if expiry exists
             if (metadata.expiry) {
                 startCountdown(metadata.expiry);
             }
-            
+
+            // Handle password or direct decryption
             if (metadata.hasPassword) {
                 document.getElementById('passwordPrompt').classList.remove('hidden');
-                document.getElementById('decryptBtn').onclick = () => decryptAndDisplay(fileId);
+                document.getElementById('decryptBtn').onclick = () => decryptFile(fileId, encryptedData, metadata);
             } else {
-                const keyBase64 = window.location.hash.substring(1);
-                if (keyBase64) {
-                    const keyArray = base64ToArray(keyBase64);
-                    const key = await importKey(keyArray);
-                    await decryptAndDisplay(fileId, key);
+                // Try to get key from URL fragment
+                const keyData = window.location.hash.substring(1);
+                if (keyData) {
+                    try {
+                        const key = await CryptoUtils.importKey(CryptoUtils.base64ToArray(keyData));
+                        await decryptAndDisplay(encryptedData, metadata, key);
+                        
+                        // Handle one-time download
+                        if (metadata.oneTime) {
+                            fileStorage.delete(fileId);
+                        }
+                    } catch (error) {
+                        document.getElementById('expiredMessage').classList.remove('hidden');
+                    }
+                } else {
+                    document.getElementById('expiredMessage').classList.remove('hidden');
                 }
             }
         }
-        
-        function displayFileMetadata(metadata) {
-            const fileMetadata = document.getElementById('fileMetadata');
-            fileMetadata.innerHTML = `
-                <div class="file-item">
-                    <div class="file-info">
-                        <span class="file-icon">${getFileIcon(metadata.filename)}</span>
-                        <div class="file-details">
-                            <h4>${metadata.filename}</h4>
-                            <p>${formatFileSize(metadata.size)} • ${metadata.filetype || 'Unknown type'}</p>
-                            <p>Uploaded: ${new Date(metadata.uploadTime).toLocaleString()}</p>
-                            ${metadata.expiry ? `<p>Expires: ${new Date(metadata.expiry).toLocaleString()}</p>` : ''}
-                            ${metadata.oneTime ? '<p style="color: #ff1744;">⚠️ This file will be deleted after download</p>' : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
+
+        async function decryptFile(fileId, encryptedData, metadata) {
+            const password = document.getElementById('downloadPassword').value;
+            
+            if (!password) {
+                showToast('Please enter the password', 'error');
+                return;
+            }
+
+            try {
+                const salt = new Uint8Array(metadata.salt);
+                const key = await CryptoUtils.deriveKey(password, salt);
+                
+                await decryptAndDisplay(encryptedData, metadata, key);
+                
+                // Handle one-time download
+                if (metadata.oneTime) {
+                    fileStorage.delete(fileId);
+                }
+                
+                document.getElementById('passwordPrompt').classList.add('hidden');
+            } catch (error) {
+                showToast('Invalid password', 'error');
+            }
         }
-        
+
+        async function decryptAndDisplay(encryptedData, metadata, key) {
+            try {
+                const iv = new Uint8Array(metadata.iv);
+                const decryptedData = await CryptoUtils.decryptFile(
+                    new Uint8Array(encryptedData), 
+                    key, 
+                    iv
+                );
+                
+                const blob = new Blob([decryptedData], { type: metadata.filetype });
+                const url = URL.createObjectURL(blob);
+                
+                // Display file preview
+                displayFilePreview(blob, metadata, url);
+                
+                // Display decrypted note if present
+                if (metadata.encryptedNote) {
+                    const noteIV = new Uint8Array(metadata.encryptedNote.iv);
+                    const encryptedNoteData = new Uint8Array(metadata.encryptedNote.data);
+                    const decryptedNote = await crypto.subtle.decrypt(
+                        { name: 'AES-GCM', iv: noteIV },
+                        key,
+                        encryptedNoteData
+                    );
+                    const decoder = new TextDecoder();
+                    const noteText = decoder.decode(decryptedNote);
+                    
+                    document.getElementById('fileNote').innerHTML = `
+                        <div class="card">
+                            <strong>Note:</strong><br>
+                            ${noteText.replace(/\n/g, '<br>')}
+                        </div>
+                    `;
+                }
+                
+                // Setup download button
+                document.getElementById('downloadBtn').onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = metadata.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                };
+                
+                document.getElementById('downloadContent').classList.remove('hidden');
+                
+            } catch (error) {
+                showToast('Decryption failed', 'error');
+                throw error;
+            }
+        }
+
+        function displayFilePreview(blob, metadata, url) {
+            const preview = document.getElementById('filePreview');
+            const fileType = metadata.filetype.toLowerCase();
+            
+            if (fileType.startsWith('image/')) {
+                preview.innerHTML = `<img src="${url}" alt="${metadata.filename}" style="max-width: 100%; height: auto;">`;
+            } else if (fileType === 'application/pdf') {
+                preview.innerHTML = `<iframe src="${url}" style="width: 100%; height: 400px; border: none;"></iframe>`;
+            } else if (fileType.startsWith('text/') || fileType === 'application/json') {
+                blob.text().then(text => {
+                    preview.innerHTML = `<textarea readonly style="width: 100%; height: 300px; background: #111; color: #fff; border: none; padding: 15px; font-family: monospace;">${text}</textarea>`;
+                });
+            } else if (fileType.startsWith('audio/')) {
+                preview.innerHTML = `<audio controls style="width: 100%;"><source src="${url}" type="${fileType}"></audio>`;
+            } else if (fileType.startsWith('video/')) {
+                preview.innerHTML = `<video controls style="width: 100%; max-height: 400px;"><source src="${url}" type="${fileType}"></video>`;
+            } else {
+                preview.innerHTML = `
+                    <div style="text-align: center; padding: 40px; border: 1px dashed #e53935; border-radius: 8px;">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">📄</div>
+                        <p>Preview not available for this file type</p>
+                        <p class="file-meta">${metadata.filename} (${formatFileSize(metadata.size)})</p>
+                    </div>
+                `;
+            }
+        }
+
         function startCountdown(expiryTime) {
-            const countdownElement = document.getElementById('expiryCountdown');
+            const countdownElement = document.getElementById('countdown');
             
             function updateCountdown() {
                 const now = Date.now();
                 const timeLeft = expiryTime - now;
                 
                 if (timeLeft <= 0) {
-                    countdownElement.textContent = '⏰ File has expired';
+                    countdownElement.textContent = 'Expired';
+                    document.getElementById('downloadContent').classList.add('hidden');
+                    document.getElementById('passwordPrompt').classList.add('hidden');
+                    document.getElementById('expiredMessage').classList.remove('hidden');
                     return;
                 }
                 
-                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
                 
-                let countdownText = '⏰ Expires in: ';
-                if (days > 0) countdownText += `${days}d `;
-                if (hours > 0) countdownText += `${hours}h `;
-                if (minutes > 0) countdownText += `${minutes}m `;
-                countdownText += `${seconds}s`;
+                countdownElement.textContent = `⏰ Expires in ${hours}h ${minutes}m ${seconds}s`;
                 
-                countdownElement.textContent = countdownText;
                 setTimeout(updateCountdown, 1000);
             }
             
             updateCountdown();
         }
-        
-        async function decryptAndDisplay(fileId, providedKey = null) {
-            try {
-                const fileData = fileStorage[fileId];
-                const { encryptedData, metadata } = fileData;
-                
-                let key = providedKey;
-                
-                if (!key) {
-                    const password = document.getElementById('downloadPassword').value;
-                    if (!password) {
-                        showToast('Please enter the password', 'error');
-                        return;
-                    }
-                    
-                    const salt = new Uint8Array(metadata.salt);
-                    key = await deriveKeyFromPassword(password, salt);
-                }
-                
-                const iv = new Uint8Array(metadata.iv);
-                const encryptedBuffer = new Uint8Array(encryptedData);
-                
-                const decryptedBuffer = await decryptFile(encryptedBuffer, key, iv);
-                const blob = new Blob([decryptedBuffer], { type: metadata.filetype });
-                
-                // Create download URL
-                const downloadUrl = URL.createObjectURL(blob);
-                
-                // Show decrypted content
-                document.getElementById('passwordPrompt').classList.add('hidden');
-                document.getElementById('downloadContent').classList.remove('hidden');
-                
-                // Preview file
-                await displayFilePreview(blob, metadata.filename, metadata.filetype);
-                
-                // Show decrypted note
-                if (metadata.encryptedNote) {
-                    const noteIv = new Uint8Array(metadata.encryptedNote.iv);
-                    const noteData = new Uint8Array(metadata.encryptedNote.data);
-                    const decryptedNote = await decryptFile(noteData, key, noteIv);
-                    const noteText = new TextDecoder().decode(decryptedNote);
-                    
-                    document.getElementById('decryptedNote').innerHTML = `
-                        <div class="card">
-                            <h4>📝 Note</h4>
-                            <p>${noteText}</p>
-                        </div>
-                    `;
-                }
-                
-                // Set up download button
-                document.getElementById('downloadFileBtn').onclick = () => {
-                    const a = document.createElement('a');
-                    a.href = downloadUrl;
-                    a.download = metadata.filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    
-                    // Handle one-time download
-                    if (metadata.oneTime) {
-                        delete fileStorage[fileId];
-                        showToast('File downloaded and deleted (one-time use)', 'success');
-                        setTimeout(() => {
-                            window.location.href = window.location.pathname;
-                        }, 2000);
-                    } else {
-                        showToast('File downloaded successfully!', 'success');
-                    }
-                };
-                
-                showToast('File decrypted successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Decryption error:', error);
-                showToast('Failed to decrypt file. Check your password.', 'error');
-            }
-        }
-        
-        async function displayFilePreview(blob, filename, filetype) {
-            const preview = document.getElementById('filePreview');
-            const ext = filename.split('.').pop().toLowerCase();
+
+        // File sharing via link functionality
+        function shareFile(fileId) {
+            const baseUrl = window.location.origin === 'null' 
+                ? window.location.href.split('?')[0] 
+                : window.location.origin + window.location.pathname;
             
-            // Clear previous preview
-            preview.innerHTML = '';
+            const shareUrl = `${baseUrl}?download=${fileId}`;
             
-            if (filetype.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(blob);
-                img.style.maxWidth = '100%';
-                img.style.height = 'auto';
-                preview.appendChild(img);
-            } else if (filetype === 'application/pdf') {
-                const iframe = document.createElement('iframe');
-                iframe.src = URL.createObjectURL(blob);
-                iframe.style.width = '100%';
-                iframe.style.height = '500px';
-                iframe.style.border = 'none';
-                preview.appendChild(iframe);
-            } else if (filetype.startsWith('text/') || ['txt', 'json', 'js', 'html', 'css', 'md'].includes(ext)) {
-                const text = await blob.text();
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.readOnly = true;
-                textarea.style.width = '100%';
-                textarea.style.height = '300px';
-                textarea.style.background = 'rgba(255, 255, 255, 0.05)';
-                textarea.style.border = 'none';
-                textarea.style.color = '#fff';
-                textarea.style.padding = '15px';
-                textarea.style.fontFamily = 'monospace';
-                textarea.style.resize = 'vertical';
-                preview.appendChild(textarea);
-            } else if (filetype.startsWith('audio/')) {
-                const audio = document.createElement('audio');
-                audio.src = URL.createObjectURL(blob);
-                audio.controls = true;
-                audio.style.width = '100%';
-                preview.appendChild(audio);
-            } else if (filetype.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.src = URL.createObjectURL(blob);
-                video.controls = true;
-                video.style.width = '100%';
-                video.style.maxHeight = '400px';
-                preview.appendChild(video);
-            } else {
-                preview.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #999;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">${getFileIcon(filename)}</div>
-                        <p>Preview not available for this file type</p>
-                        <p>Click download to save the file</p>
-                    </div>
-                `;
-            }
-        }
-        
-        // Cleanup expired files (runs every minute)
-        function cleanupExpiredFiles() {
-            const now = Date.now();
-            for (const fileId in fileStorage) {
-                const file = fileStorage[fileId];
-                if (file.metadata.expiry && now > file.metadata.expiry) {
-                    delete fileStorage[fileId];
-                }
-            }
-        }
-        
-        // File sharing via Web Share API
-        async function shareFile(url, filename) {
             if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `DropVault: ${filename}`,
-                        text: `Download this securely encrypted file: ${filename}`,
-                        url: url
-                    });
-                    showToast('Link shared successfully!');
-                } catch (error) {
-                    if (error.name !== 'AbortError') {
-                        copyToClipboard(url);
-                    }
-                }
+                navigator.share({
+                    title: 'DropVault File Share',
+                    text: 'Download my file securely',
+                    url: shareUrl
+                });
             } else {
-                copyToClipboard(url);
+                copyToClipboard(shareUrl);
             }
         }
-        
-        // Batch operations
+
+        // Bulk operations
         function selectAllFiles() {
             const checkboxes = document.querySelectorAll('.file-checkbox');
-            const selectAll = document.getElementById('selectAll').checked;
-            checkboxes.forEach(cb => cb.checked = selectAll);
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            selectAllBtn.textContent = allChecked ? 'Select All' : 'Deselect All';
+            updateBulkActions();
         }
-        
+
+        function updateBulkActions() {
+            const checkedBoxes = document.querySelectorAll('.file-checkbox:checked');
+            const bulkActions = document.getElementById('bulkActions');
+            
+            if (checkedBoxes.length > 0) {
+                bulkActions.classList.remove('hidden');
+                document.getElementById('selectedCount').textContent = checkedBoxes.length;
+            } else {
+                bulkActions.classList.add('hidden');
+            }
+        }
+
         function deleteSelectedFiles() {
-            const checkboxes = document.querySelectorAll('.file-checkbox:checked');
-            const filesToDelete = Array.from(checkboxes).map(cb => cb.dataset.fileId);
+            const checkedBoxes = document.querySelectorAll('.file-checkbox:checked');
+            const selectedIndices = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.index));
             
-            if (filesToDelete.length === 0) {
-                showToast('No files selected', 'error');
-                return;
+            // Remove in reverse order to maintain indices
+            selectedIndices.sort((a, b) => b - a).forEach(index => {
+                selectedFiles.splice(index, 1);
+            });
+            
+            displayFiles();
+            updateBulkActions();
+            showToast(`${selectedIndices.length} file(s) removed`);
+        }
+
+        // File type validation
+        function validateFileType(file) {
+            const maxSize = 100 * 1024 * 1024; // 100MB limit
+            const allowedTypes = [
+                'image/', 'video/', 'audio/', 'text/', 'application/pdf',
+                'application/json', 'application/zip', 'application/x-rar',
+                'application/msword', 'application/vnd.openxmlformats-officedocument'
+            ];
+            
+            if (file.size > maxSize) {
+                showToast(`File ${file.name} is too large (max 100MB)`, 'error');
+                return false;
             }
             
-            if (confirm(`Delete ${filesToDelete.length} file(s)?`)) {
-                filesToDelete.forEach(fileId => delete fileStorage[fileId]);
-                showToast(`${filesToDelete.length} file(s) deleted`);
-                location.reload();
+            const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
+            if (!isAllowed) {
+                showToast(`File type ${file.type} is not supported`, 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Enhanced file handling with validation
+        function handleFiles(files) {
+            const validFiles = files.filter(validateFileType);
+            selectedFiles = [...selectedFiles, ...validFiles];
+            
+            if (validFiles.length !== files.length) {
+                showToast(`${files.length - validFiles.length} file(s) were rejected`, 'error');
+            }
+            
+            displayFiles();
+        }
+
+        // Enhanced file display with bulk selection
+        function displayFiles() {
+            fileList.innerHTML = '';
+            
+            if (selectedFiles.length > 1) {
+                const bulkControls = document.createElement('div');
+                bulkControls.className = 'file-item';
+                bulkControls.innerHTML = `
+                    <div class="file-info">
+                        <strong>${selectedFiles.length} files selected</strong>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn" id="selectAllBtn" onclick="selectAllFiles()">Select All</button>
+                        <div id="bulkActions" class="hidden" style="margin-left: 10px;">
+                            <span id="selectedCount">0</span> selected
+                            <button class="btn" onclick="deleteSelectedFiles()" style="margin-left: 10px;">Remove Selected</button>
+                        </div>
+                    </div>
+                `;
+                fileList.appendChild(bulkControls);
+            }
+            
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        ${selectedFiles.length > 1 ? `<input type="checkbox" class="file-checkbox" data-index="${index}" onchange="updateBulkActions()">` : ''}
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-meta">${formatFileSize(file.size)} • ${file.type || 'Unknown'}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn" onclick="removeFile(${index})">Remove</button>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // Cleanup expired files (runs periodically)
+        function cleanupExpiredFiles() {
+            const now = Date.now();
+            const expiredFiles = [];
+            
+            fileStorage.forEach((data, fileId) => {
+                if (data.metadata.expiry && now > data.metadata.expiry) {
+                    expiredFiles.push(fileId);
+                }
+            });
+            
+            expiredFiles.forEach(fileId => {
+                fileStorage.delete(fileId);
+            });
+            
+            if (expiredFiles.length > 0) {
+                console.log(`Cleaned up ${expiredFiles.length} expired files`);
             }
         }
-        
-        // Event listeners
+
+        // Run cleanup every minute
+        setInterval(cleanupExpiredFiles, 60000);
+
+        // Enhanced URL handling for different environments
+        function getBaseUrl() {
+            if (window.location.protocol === 'file:') {
+                return window.location.href.split('?')[0];
+            } else {
+                return window.location.origin + window.location.pathname;
+            }
+        }
+
+        // Initialize app
         document.addEventListener('DOMContentLoaded', () => {
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
-            const uploadBtn = document.getElementById('uploadBtn');
+            initDownload();
             
-            // Drag and drop
-            uploadArea.addEventListener('click', () => fileInput.click());
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                handleFileSelect(e.dataTransfer.files);
-            });
-            
-            // File input change
-            fileInput.addEventListener('change', (e) => {
-                handleFileSelect(e.target.files);
-            });
-            
-            // Upload button
-            uploadBtn.addEventListener('click', uploadFiles);
-            
-            // Check for download on page load
-            handleDownload();
-            
-            // Start cleanup interval
-            setInterval(cleanupExpiredFiles, 60000);
-            
-            // Keyboard shortcuts
+            // Add keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey || e.metaKey) {
-                    if (e.key === 'u') {
-                        e.preventDefault();
-                        fileInput.click();
-                    } else if (e.key === 'Enter') {
-                        if (!uploadBtn.disabled && !uploadBtn.classList.contains('hidden')) {
+                    switch(e.key) {
+                        case 'u':
                             e.preventDefault();
-                            uploadFiles();
-                        }
+                            fileInput.click();
+                            break;
+                        case 'Enter':
+                            if (document.getElementById('uploadSection').style.display !== 'none') {
+                                e.preventDefault();
+                                uploadBtn.click();
+                            }
+                            break;
                     }
                 }
             });
             
-            // Auto-focus password input
-            const passwordInput = document.getElementById('downloadPassword');
-            if (passwordInput && !passwordInput.classList.contains('hidden')) {
-                passwordInput.focus();
-            }
-            
-            // Enter key for password
-            document.getElementById('downloadPassword')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('decryptBtn').click();
+            // Add paste support for files
+            document.addEventListener('paste', (e) => {
+                const items = Array.from(e.clipboardData.items);
+                const files = items
+                    .filter(item => item.kind === 'file')
+                    .map(item => item.getAsFile())
+                    .filter(file => file !== null);
+                
+                if (files.length > 0) {
+                    handleFiles(files);
+                    showToast(`${files.length} file(s) pasted from clipboard`);
                 }
             });
         });
-        
-        // Service Worker for offline support (optional enhancement)
+
+        // Enhanced error handling
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+            showToast('An unexpected error occurred', 'error');
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled promise rejection:', e.reason);
+            showToast('An unexpected error occurred', 'error');
+        });
+
+        // Service worker registration for offline support (optional)
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {
-                // Service worker not available, continue without offline support
+            window.addEventListener('load', () => {
+                // Service worker would be registered here for offline functionality
+                console.log('DropVault loaded successfully');
             });
         }
-        
-        // Performance monitoring
-        function logPerformanceMetrics() {
-            if (window.performance && window.performance.timing) {
-                const timing = window.performance.timing;
-                const loadTime = timing.loadEventEnd - timing.navigationStart;
-                console.log(`Page load time: ${loadTime}ms`);
-            }
-        }
-        
-        window.addEventListener('load', logPerformanceMetrics);
-        
-        // Error handling for crypto operations
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
-            showToast('An error occurred. Please try again.', 'error');
-        });
-        
-        // Analytics (privacy-focused)
-        function trackEvent(action, category = 'user') {
-            // Simple, privacy-focused analytics
-            const event = {
-                action,
-                category,
-                timestamp: Date.now(),
-                userAgent: navigator.userAgent.split(' ')[0] // Only browser name
-            };
-            
-            // Store in sessionStorage for current session only
-            const events = JSON.parse(sessionStorage.getItem('analytics') || '[]');
-            events.push(event);
-            
-            // Keep only last 10 events
-            if (events.length > 10) {
-                events.shift();
-            }
-            
-            sessionStorage.setItem('analytics', JSON.stringify(events));
-        }
-        
-        // Track key user actions
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn')) {
-                trackEvent('button_click');
-            }
-        });
-        
-        // Update UI based on file selection
-        function updateUploadUI() {
-            const hasFiles = selectedFiles.length > 0;
-            const uploadBtn = document.getElementById('uploadBtn');
-            const uploadArea = document.getElementById('uploadArea');
-            
-            if (hasFiles) {
-                uploadArea.style.borderColor = '#4caf50';
-                uploadArea.style.background = 'rgba(76, 175, 80, 0.1)';
-                uploadBtn.textContent = `🚀 Upload ${selectedFiles.length} file(s)`;
-            } else {
-                uploadArea.style.borderColor = '#e53935';
-                uploadArea.style.background = 'rgba(229, 57, 53, 0.05)';
-                uploadBtn.textContent = '🚀 Upload Files';
-            }
-        }
-        
-        // Enhanced file validation
-        function validateFiles(files) {
-            const maxSize = 100 * 1024 * 1024; // 100MB per file
-            const maxTotal = 500 * 1024 * 1024; // 500MB total
-            
-            let totalSize = 0;
-            const validFiles = [];
-            
-            for (const file of files) {
-                if (file.size > maxSize) {
-                    showToast(`File ${file.name} is too large (max 100MB)`, 'error');
-                    continue;
-                }
-                
-                totalSize += file.size;
-                if (totalSize > maxTotal) {
-                    showToast('Total size exceeds 500MB limit', 'error');
-                    break;
-                }
-                
-                validFiles.push(file);
-            }
-            
-            return validFiles;
-        }
-        
-        // Update file select handler to include validation
-        const originalHandleFileSelect = handleFileSelect;
-        handleFileSelect = function(files) {
-            const validFiles = validateFiles(files);
-            selectedFiles = validFiles;
-            displayFileList();
-            updateUploadUI();
-            document.getElementById('uploadBtn').disabled = selectedFiles.length === 0;
-        };
     </script>
 </body>
 </html>

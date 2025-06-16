@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropVault - Zero-Knowledge File Sharing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(229, 57, 53, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-area {
+            border: 2px dashed #e53935;
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #ff1744;
+            box-shadow: 0 0 20px rgba(229, 57, 53, 0.3);
+        }
+
+        .upload-area.drag-over {
+            background: rgba(229, 57, 53, 0.1);
+            border-color: #ff1744;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e53935;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid #e53935;
+            color: #e53935;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #e53935;
+            color: #000;
+            box-shadow: 0 0 15px rgba(229, 57, 53, 0.5);
+        }
+
+        .btn-primary {
+            background: #e53935;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #ff1744;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid rgba(229, 57, 53, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #e53935;
+            box-shadow: 0 0 10px rgba(229, 57, 53, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        select.form-input {
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #e53935;
+        }
+
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(229, 57, 53, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e53935, #ff1744);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .qr-code canvas {
+            border: 3px solid #e53935;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+        }
+
+        .download-link {
+            word-break: break-all;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .preview-area {
+            margin: 20px 0;
+            border: 1px solid rgba(229, 57, 53, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-area img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .preview-area iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .preview-area textarea {
+            width: 100%;
+            min-height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #fff;
+            padding: 15px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(229, 57, 53, 0.3);
+            border-top: 3px solid #e53935;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e53935;
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ff5722;
+        }
+
+        .copy-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .countdown {
+            color: #ff9800;
+            font-weight: 500;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 DropVault</h1>
+        <p class="subtitle">Zero-Knowledge File Sharing</p>
+        
+        <!-- Upload Section -->
+        <div id="upload-section" class="card">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <h3>Drop files here or click to select</h3>
+                <p>Your files are encrypted before leaving your device</p>
+                <input type="file" id="file-input" class="file-input" multiple>
+            </div>
+            
+            <div class="file-list" id="file-list"></div>
+            
+            <div class="input-group">
+                <label for="password">Password (optional)</label>
+                <input type="password" id="password" class="form-input" placeholder="Leave empty for password-less sharing">
+            </div>
+            
+            <div class="input-group">
+                <label for="note">Note (optional)</label>
+                <textarea id="note" class="form-input" rows="3" placeholder="Add a note that will be encrypted with your files"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="expiry">Auto-expire</label>
+                <select id="expiry" class="form-input">
+                    <option value="1h">1 Hour</option>
+                    <option value="24h" selected>24 Hours</option>
+                    <option value="7d">7 Days</option>
+                    <option value="30d">30 Days</option>
+                </select>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="one-time" class="checkbox">
+                <label for="one-time">One-time download only</label>
+            </div>
+            
+            <div class="progress-bar hidden" id="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <button class="btn btn-primary" id="upload-btn" style="width: 100%; margin-top: 20px;">
+                🚀 Upload Files
+            </button>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="result-section" class="result-section hidden"></div>
+        
+        <!-- Download Section -->
+        <div id="download-section" class="card hidden">
+            <div id="download-content"></div>
+        </div>
+    </div>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    
+    <script>
+        class DropVault {
+            constructor() {
+                this.files = [];
+                this.API_BASE = this.getApiBase();
+                this.initializeEventListeners();
+                this.checkForDownload();
+            }
+            
+            getApiBase() {
+                // Handle local file protocol
+                if (window.location.protocol === 'file:') {
+                    return 'http://localhost:5000';
+                }
+                return window.location.origin;
+            }
+            
+            initializeEventListeners() {
+                const uploadArea = document.getElementById('upload-area');
+                const fileInput = document.getElementById('file-input');
+                const uploadBtn = document.getElementById('upload-btn');
+                
+                // Drag and drop
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+                
+                // File selection
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+                
+                // Upload button
+                uploadBtn.addEventListener('click', this.uploadFiles.bind(this));
+            }
+            
+            handleDragOver(e) {
+                e.preventDefault();
+                document.getElementById('upload-area').classList.add('drag-over');
+            }
+            
+            handleDragLeave(e) {
+                e.preventDefault();
+                document.getElementById('upload-area').classList.remove('drag-over');
+            }
+            
+            handleDrop(e) {
+                e.preventDefault();
+                document.getElementById('upload-area').classList.remove('drag-over');
+                const files = Array.from(e.dataTransfer.files);
+                this.addFiles(files);
+            }
+            
+            handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                this.addFiles(files);
+            }
+            
+            addFiles(files) {
+                this.files = [...this.files, ...files];
+                this.updateFileList();
+            }
+            
+            updateFileList() {
+                const fileList = document.getElementById('file-list');
+                if (this.files.length === 0) {
+                    fileList.innerHTML = '';
+                    return;
+                }
+                
+                fileList.innerHTML = this.files.map((file, index) => `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${this.formatFileSize(file.size)}</div>
+                        </div>
+                        <button class="btn" onclick="dropVault.removeFile(${index})">✕</button>
+                    </div>
+                `).join('');
+            }
+            
+            removeFile(index) {
+                this.files.splice(index, 1);
+                this.updateFileList();
+            }
+            
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            async generateKey(password = null, salt = null) {
+                if (password) {
+                    const encoder = new TextEncoder();
+                    const keyMaterial = await crypto.subtle.importKey(
+                        'raw',
+                        encoder.encode(password),
+                        'PBKDF2',
+                        false,
+                        ['deriveKey']
+                    );
+                    
+                    if (!salt) {
+                        salt = crypto.getRandomValues(new Uint8Array(16));
+                    }
+                    
+                    const key = await crypto.subtle.deriveKey(
+                        {
+                            name: 'PBKDF2',
+                            salt: salt,
+                            iterations: 100000,
+                            hash: 'SHA-256'
+                        },
+                        keyMaterial,
+                        { name: 'AES-GCM', length: 256 },
+                        true,
+                        ['encrypt', 'decrypt']
+                    );
+                    
+                    return { key, salt };
+                } else {
+                    const key = await crypto.subtle.generateKey(
+                        { name: 'AES-GCM', length: 256 },
+                        true,
+                        ['encrypt', 'decrypt']
+                    );
+                    return { key, salt: null };
+                }
+            }
+            
+            async encryptFile(file, key) {
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const fileBuffer = await file.arrayBuffer();
+                
+                const encryptedData = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    fileBuffer
+                );
+                
+                return { encryptedData, iv };
+            }
+            
+            async encryptNote(note, key) {
+                if (!note) return null;
+                
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoder = new TextEncoder();
+                const noteBuffer = encoder.encode(note);
+                
+                const encryptedNote = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    noteBuffer
+                );
+                
+                return { encryptedNote, noteIv: iv };
+            }
+            
+            async uploadFiles() {
+                if (this.files.length === 0) {
+                    this.showToast('Please select files to upload', 'error');
+                    return;
+                }
+                
+                const password = document.getElementById('password').value;
+                const note = document.getElementById('note').value;
+                const expiry = document.getElementById('expiry').value;
+                const oneTime = document.getElementById('one-time').checked;
+                
+                this.showProgress(true);
+                const results = [];
+                
+                for (let i = 0; i < this.files.length; i++) {
+                    const file = this.files[i];
+                    this.updateProgress((i / this.files.length) * 100);
+                    
+                    try {
+                        const { key, salt } = await this.generateKey(password);
+                        const { encryptedData, iv } = await this.encryptFile(file, key);
+                        const noteData = await this.encryptNote(note, key);
+                        
+                        const metadata = {
+                            filename: file.name,
+                            filetype: file.type,
+                            size: file.size,
+                            uploadTime: Date.now(),
+                            expiry: this.calculateExpiry(expiry),
+                            oneTime: oneTime,
+                            hasPassword: !!password,
+                            salt: salt ? Array.from(salt) : null,
+                            iv: Array.from(iv),
+                            noteIv: noteData ? Array.from(noteData.noteIv) : null
+                        };
+                        
+                        const formData = new FormData();
+                        formData.append('file', new Blob([encryptedData]));
+                        formData.append('metadata', JSON.stringify(metadata));
+                        if (noteData) {
+                            formData.append('note', new Blob([noteData.encryptedNote]));
+                        }
+                        
+                        const response = await fetch(`${this.API_BASE}/api/upload`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            const downloadUrl = this.generateDownloadUrl(result.id, key, password);
+                            results.push({
+                                id: result.id,
+                                filename: file.name,
+                                size: file.size,
+                                url: downloadUrl,
+                                hasPassword: !!password
+                            });
+                        } else {
+                            throw new Error('Upload failed');
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        this.showToast(`Failed to upload ${file.name}`, 'error');
+                    }
+                }
+                
+                this.updateProgress(100);
+                setTimeout(() => {
+                    this.showProgress(false);
+                    this.showResults(results);
+                }, 500);
+            }
+            
+            calculateExpiry(expiry) {
+                const now = Date.now();
+                switch (expiry) {
+                    case '1h': return now + (60 * 60 * 1000);
+                    case '24h': return now + (24 * 60 * 60 * 1000);
+                    case '7d': return now + (7 * 24 * 60 * 60 * 1000);
+                    case '30d': return now + (30 * 24 * 60 * 60 * 1000);
+                    default: return now + (24 * 60 * 60 * 1000);
+                }
+            }
+            
+            async generateDownloadUrl(fileId, key, hasPassword) {
+                const baseUrl = window.location.protocol === 'file:' ? 
+                    `${window.location.href}` : 
+                    `${window.location.origin}${window.location.pathname}`;
+                
+                let url = `${baseUrl}?download=${fileId}`;
+                
+                if (!hasPassword) {
+                    const exportedKey = await crypto.subtle.exportKey('raw', key);
+                    const keyHex = Array.from(new Uint8Array(exportedKey))
+                        .map(b => b.toString(16).padStart(2, '0')).join('');
+                    url += `#${keyHex}`;
+                }
+                
+                return url;
+            }
+            
+            showProgress(show) {
+                const progressBar = document.getElementById('progress-bar');
+                progressBar.classList.toggle('hidden', !show);
+                if (!show) {
+                    this.updateProgress(0);
+                }
+            }
+            
+            updateProgress(percent) {
+                const progressFill = document.getElementById('progress-fill');
+                progressFill.style.width = `${percent}%`;
+            }
+            
+            showResults(results) {
+                const resultSection = document.getElementById('result-section');
+                resultSection.classList.remove('hidden');
+                
+                resultSection.innerHTML = `
+                    <div class="card">
+                        <h3>✅ Upload Complete!</h3>
+                        <p>Your files have been encrypted and uploaded successfully.</p>
+                        ${results.map(result => `
+                            <div class="result-item">
+                                <h4>${result.filename}</h4>
+                                <p>Size: ${this.formatFileSize(result.size)} | 
+                                   ${result.hasPassword ? '🔒 Password Protected' : '🔗 Direct Link'}</p>
+                                <div class="qr-code">
+                                    <canvas id="qr-${result.id}"></canvas>
+                                </div>
+                                <div class="download-link">
+                                    ${result.url}
+                                    <button class="btn copy-btn" onclick="dropVault.copyToClipboard('${result.url}')">📋 Copy</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        <button class="btn" onclick="dropVault.uploadAnother()" style="width: 100%; margin-top: 20px;">
+                            📁 Upload More Files
+                        </button>
+                    </div>
+                `;
+                
+                // Generate QR codes
+                results.forEach(result => {
+                    this.generateQRCode(result.id, result.url);
+                });
+                
+                this.showToast('Files uploaded successfully!');
+            }
+            
+            generateQRCode(id, url) {
+                const qr = qrcode(0, 'M');
+                qr.addData(url);
+                qr.make();
+                
+                const canvas = document.getElementById(`qr-${id}`);
+                const size = 150;
+                canvas.width = size;
+                canvas.height = size;
+                
+                const ctx = canvas.getContext('2d');
+                const moduleCount = qr.getModuleCount();
+                const moduleSize = size / moduleCount;
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+                
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
+                        }
+                    }
+                }
+            }
+            
+            async copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.showToast('Link copied to clipboard!');
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    this.showToast('Failed to copy link', 'error');
+                }
+            }
+            
+            uploadAnother() {
+                this.files = [];
+                this.updateFileList();
+                document.getElementById('result-section').classList.add('hidden');
+                document.getElementById('password').value = '';
+                document.getElementById('note').value = '';
+                document.getElementById('one-time').checked = false;
+                document.getElementById('expiry').value = '24h';
+            }
+            
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => document.body.removeChild(toast), 300);
+                }, 3000);
+            }
+            
+            // Download functionality
+            async checkForDownload() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const fileId = urlParams.get('download');
+                
+                if (fileId) {
+                    document.getElementById('upload-section').classList.add('hidden');
+                    document.getElementById('download-section').classList.remove('hidden');
+                    await this.loadFile(fileId);
+                }
+            }
+            
+            async loadFile(fileId) {
+                const downloadContent = document.getElementById('download-content');
+                downloadContent.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading file...</p>
+                    </div>
+                `;
+                
+                try {
+                    const response = await fetch(`${this.API_BASE}/api/file/${fileId}`);
+                    if (!response.ok) {
+                        throw new Error('File not found or expired');
+                    }
+                    
+                    const data = await response.json();
+                    const metadata = data.metadata;
+                    
+                    // Check if expired
+                    if (metadata.expiry && Date.now() > metadata.expiry) {
+                        throw new Error('File has expired');
+                    }
+                    
+                    this.showFileInfo(metadata, data.encryptedData, data.encryptedNote, fileId);
+                    
+                } catch (error) {
+                    downloadContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <h3>❌ File Not Available</h3>
+                            <p>${error.message}</p>
+                            <button class="btn" onclick="window.location.href='${window.location.pathname}'">
+                                🏠 Go Home
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            showFileInfo(metadata, encryptedData, encryptedNote, fileId) {
+                const downloadContent = document.getElementById('download-content');
+                const expiryDate = new Date(metadata.expiry);
+                const timeLeft = metadata.expiry - Date.now();
+                
+                downloadContent.innerHTML = `
+                    <h3>📁 ${metadata.filename}</h3>
+                    <div style="margin: 20px 0; color: #888;">
+                        <p>Size: ${this.formatFileSize(metadata.size)}</p>
+                        <p>Type: ${metadata.filetype || 'Unknown'}</p>
+                        <p>Uploaded: ${new Date(metadata.uploadTime).toLocaleString()}</p>
+                        <p>Expires: ${expiryDate.toLocaleString()}</p>
+                        ${timeLeft > 0 ? `<div class="countdown" id="countdown">Time remaining: ${this.formatTimeLeft(timeLeft)}</div>` : ''}
+                        ${metadata.oneTime ? '<p style="color: #ff9800;">⚠️ One-time download only</p>' : ''}
+                    </div>
+                    
+                    ${metadata.hasPassword ? `
+                        <div class="input-group">
+                            <label for="download-password">Enter password to decrypt:</label>
+                            <input type="password" id="download-password" class="form-input" placeholder="Password">
+                            <button class="btn btn-primary" onclick="dropVault.decryptFile('${fileId}', '${encryptedData}', '${encryptedNote || ''}')" style="margin-top: 10px;">
+                                🔓 Decrypt & Download
+                            </button>
+                        </div>
+                    ` : `
+                        <button class="btn btn-primary" onclick="dropVault.decryptFile('${fileId}', '${encryptedData}', '${encryptedNote || ''}')" style="width: 100%;">
+                            📥 Download File
+                        </button>
+                    `}
+                    
+                    <div id="file-preview" class="preview-area hidden"></div>
+                    <div id="decrypted-note" class="hidden" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4>📝 Note:</h4>
+                        <div id="note-content"></div>
+                    </div>
+                `;
+                
+                // Start countdown timer
+                if (timeLeft > 0) {
+                    this.startCountdown(timeLeft);
+                }
+            }
+            
+            formatTimeLeft(ms) {
+                const hours = Math.floor(ms / (1000 * 60 * 60));
+                const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+                
+                if (hours > 0) {
+                    return `${hours}h ${minutes}m ${seconds}s`;
+                } else if (minutes > 0) {
+                    return `${minutes}m ${seconds}s`;
+                } else {
+                    return `${seconds}s`;
+                }
+            }
+            
+            startCountdown(timeLeft) {
+                const countdownElement = document.getElementById('countdown');
+                if (!countdownElement) return;
+                
+                const interval = setInterval(() => {
+                    timeLeft -= 1000;
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        countdownElement.textContent = 'File has expired';
+                        countdownElement.style.color = '#ff5722';
+                    } else {
+                        countdownElement.textContent = `Time remaining: ${this.formatTimeLeft(timeLeft)}`;
+                    }
+                }, 1000);
+            }
+            
+            async decryptFile(fileId, encryptedDataUrl, encryptedNoteUrl) {
+                try {
+                    const password = document.getElementById('download-password')?.value;
+                    const hasPassword = !!document.getElementById('download-password');
+                    
+                    let key;
+                    if (hasPassword) {
+                        if (!password) {
+                            this.showToast('Please enter the password', 'error');
+                            return;
+                        }
+                        
+                        // Get metadata to retrieve salt
+                        const response = await fetch(`${this.API_BASE}/api/file/${fileId}`);
+                        const data = await response.json();
+                        const salt = new Uint8Array(data.metadata.salt);
+                        
+                        const result = await this.generateKey(password, salt);
+                        key = result.key;
+                    } else {
+                        // Extract key from URL fragment
+                        const keyHex = window.location.hash.substring(1);
+                        if (!keyHex) {
+                            throw new Error('Decryption key not found in URL');
+                        }
+                        
+                        const keyBytes = new Uint8Array(keyHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+                        key = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['decrypt']);
+                    }
+                    
+                    // Fetch and decrypt file
+                    const fileResponse = await fetch(`${this.API_BASE}/api/file/${fileId}/data`);
+                    const encryptedBuffer = await fileResponse.arrayBuffer();
+                    
+                    const metadataResponse = await fetch(`${this.API_BASE}/api/file/${fileId}`);
+                    const metadata = (await metadataResponse.json()).metadata;
+                    const iv = new Uint8Array(metadata.iv);
+                    
+                    const decryptedData = await crypto.subtle.decrypt(
+                        { name: 'AES-GCM', iv: iv },
+                        key,
+                        encryptedBuffer
+                    );
+                    
+                    // Create downloadable blob
+                    const blob = new Blob([decryptedData], { type: metadata.filetype });
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Auto-download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = metadata.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    // Show preview if supported
+                    this.showFilePreview(blob, metadata.filename, metadata.filetype);
+                    
+                    // Decrypt and show note if present
+                    if (encryptedNoteUrl && metadata.noteIv) {
+                        await this.decryptNote(key, fileId, metadata.noteIv);
+                    }
+                    
+                    // Delete file if one-time download
+                    if (metadata.oneTime) {
+                        await fetch(`${this.API_BASE}/api/file/${fileId}`, { method: 'DELETE' });
+                        this.showToast('File deleted after download (one-time only)');
+                    } else {
+                        this.showToast('File downloaded successfully!');
+                    }
+                    
+                } catch (error) {
+                    console.error('Decryption error:', error);
+                    this.showToast('Failed to decrypt file. Check password.', 'error');
+                }
+            }
+            
+            async decryptNote(key, fileId, noteIv) {
+                try {
+                    const noteResponse = await fetch(`${this.API_BASE}/api/file/${fileId}/note`);
+                    if (noteResponse.ok) {
+                        const encryptedNote = await noteResponse.arrayBuffer();
+                        const iv = new Uint8Array(noteIv);
+                        
+                        const decryptedNote = await crypto.subtle.decrypt(
+                            { name: 'AES-GCM', iv: iv },
+                            key,
+                            encryptedNote
+                        );
+                        
+                        const decoder = new TextDecoder();
+                        const noteText = decoder.decode(decryptedNote);
+                        
+                        document.getElementById('decrypted-note').classList.remove('hidden');
+                        document.getElementById('note-content').textContent = noteText;
+                    }
+                } catch (error) {
+                    console.error('Note decryption error:', error);
+                }
+            }
+            
+            showFilePreview(blob, filename, filetype) {
+                const previewArea = document.getElementById('file-preview');
+                previewArea.classList.remove('hidden');
+                
+                const url = URL.createObjectURL(blob);
+                
+                if (filetype.startsWith('image/')) {
+                    previewArea.innerHTML = `
+                        <h4>🖼️ Preview:</h4>
+                        <img src="${url}" alt="${filename}" style="max-width: 100%; height: auto;">
+                    `;
+                } else if (filetype === 'application/pdf') {
+                    previewArea.innerHTML = `
+                        <h4>📄 PDF Preview:</h4>
+                        <iframe src="${url}" style="width: 100%; height: 500px; border: none;"></iframe>
+                    `;
+                } else if (filetype.startsWith('text/') || filename.endsWith('.json') || filename.endsWith('.xml')) {
+                    blob.text().then(text => {
+                        previewArea.innerHTML = `
+                            <h4>📝 Text Preview:</h4>
+                            <textarea readonly style="width: 100%; min-height: 300px; background: rgba(255,255,255,0.05); border: none; color: #fff; padding: 15px; font-family: monospace;">${text}</textarea>
+                        `;
+                    });
+                } else if (filetype.startsWith('audio/')) {
+                    previewArea.innerHTML = `
+                        <h4>🎵 Audio Preview:</h4>
+                        <audio controls style="width: 100%;">
+                            <source src="${url}" type="${filetype}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                } else if (filetype.startsWith('video/')) {
+                    previewArea.innerHTML = `
+                        <h4>🎬 Video Preview:</h4>
+                        <video controls style="width: 100%; max-height: 400px;">
+                            <source src="${url}" type="${filetype}">
+                            Your browser does not support the video element.
+                        </video>
+                    `;
+                } else {
+                    previewArea.innerHTML = `
+                        <h4>📎 File Ready</h4>
+                        <p>Preview not available for this file type.</p>
+                        <button class="btn" onclick="window.open('${url}', '_blank')">🔍 Open in New Tab</button>
+                    `;
+                }
+            }
+        }
+        
+        // Initialize the application
+        const dropVault = new DropVault();
+    </script>
+</body>
+</html>
