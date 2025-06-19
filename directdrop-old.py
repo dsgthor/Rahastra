@@ -163,12 +163,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                 <div class="input-group">
                     <label>Enter Room Code:</label>
                     <input type="text" id="room-code-input" placeholder="Paste room code here...">
+                    <button class="btn" onclick="joinRoom()" style="margin-top: 10px;">Connect</button>
                 </div>
-                <div class="input-group">
-                    <label>Password (if required):</label>
-                    <input type="password" id="receiver-password-input" placeholder="Enter password if the sender set one">
-                </div>
-                <button class="btn" onclick="joinRoom()" style="margin-top: 10px;">Connect</button>
             </div>
 
             <div id="sender-setup" class="hidden">
@@ -220,73 +216,11 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         let isConnected = false;
         let fileQueue = [];
         let currentTransfer = null;
-        let transferPassword = null;
 
         const ICE_SERVERS = [
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' }
         ];
-
-        // AES Encryption utilities
-        async function deriveKey(password, salt) {
-            const encoder = new TextEncoder();
-            const passwordKey = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(password),
-                'PBKDF2',
-                false,
-                ['deriveKey']
-            );
-            
-            return crypto.subtle.deriveKey(
-                {
-                    name: 'PBKDF2',
-                    salt: salt,
-                    iterations: 100000,
-                    hash: 'SHA-256'
-                },
-                passwordKey,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['encrypt', 'decrypt']
-            );
-        }
-
-        async function encryptData(data, password) {
-            const encoder = new TextEncoder();
-            const salt = crypto.getRandomValues(new Uint8Array(16));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            
-            const key = await deriveKey(password, salt);
-            const encrypted = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                typeof data === 'string' ? encoder.encode(data) : data
-            );
-            
-            // Combine salt + iv + encrypted data
-            const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-            combined.set(salt, 0);
-            combined.set(iv, salt.length);
-            combined.set(new Uint8Array(encrypted), salt.length + iv.length);
-            
-            return combined;
-        }
-
-        async function decryptData(encryptedData, password) {
-            const salt = encryptedData.slice(0, 16);
-            const iv = encryptedData.slice(16, 28);
-            const encrypted = encryptedData.slice(28);
-            
-            const key = await deriveKey(password, salt);
-            const decrypted = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                encrypted
-            );
-            
-            return decrypted;
-        }
 
         function updateStatus(message, type = 'disconnected') {
             const status = document.getElementById('status');
@@ -319,12 +253,6 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         }
 
         async function createRoom() {
-            // Get password if provided
-            const passwordInput = document.getElementById('password-input').value;
-            if (passwordInput.trim()) {
-                transferPassword = passwordInput.trim();
-            }
-            
             roomId = generateRoomId();
             const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = `${protocol}//${location.host}/ws/${roomId}/sender`;
@@ -347,13 +275,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 
         async function joinRoom() {
             const roomCode = document.getElementById('room-code-input').value.trim();
-            const passwordInput = document.getElementById('receiver-password-input').value;
-            
             if (!roomCode) return;
-
-            if (passwordInput.trim()) {
-                transferPassword = passwordInput.trim();
-            }
 
             roomId = roomCode;
             const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -441,10 +363,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             
             dataChannel.onopen = () => {
                 isConnected = true;
-                const lockIcon = transferPassword ? '🔒' : '🔓';
-                const encryptionStatus = transferPassword ? ' (Password Protected)' : ' (No Password)';
-                updateStatus(`✅ Connected${encryptionStatus}`, 'connected');
-                
+                updateStatus('✅ Connected - Ready to transfer files!', 'connected');
                 hideElement('sender-setup');
                 hideElement('receiver-input');
                 showElement('connection-controls');
@@ -456,8 +375,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                     showElement('receive-area');
                 }
                 
-                document.getElementById('peer-info').innerHTML = 
-                    `${lockIcon} Connected as ${role} | Room: ${roomId}${encryptionStatus}`;
+                document.getElementById('peer-info').textContent = 
+                    `Connected as ${role} | Room: ${roomId}`;
             };
             
             dataChannel.onmessage = handleFileMessage;
@@ -522,68 +441,40 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             const chunkSize = 16384; // 16KB chunks
             const totalChunks = Math.ceil(file.size / chunkSize);
             
-            try {
-                // Send file metadata
-                const metadata = {
-                    type: 'file-start',
-                    name: file.name,
-                    size: file.size,
-                    totalChunks: totalChunks,
-                    encrypted: !!transferPassword
-                };
+            // Send file metadata
+            dataChannel.send(JSON.stringify({
+                type: 'file-start',
+                name: file.name,
+                size: file.size,
+                totalChunks: totalChunks
+            }));
+            
+            document.getElementById(`status-${file.name}`).textContent = '📤 Sending...';
+            
+            // Send file chunks
+            for (let i = 0; i < totalChunks; i++) {
+                const start = i * chunkSize;
+                const end = Math.min(start + chunkSize, file.size);
+                const chunk = file.slice(start, end);
+                const arrayBuffer = await chunk.arrayBuffer();
                 
-                dataChannel.send(JSON.stringify(metadata));
-                document.getElementById(`status-${file.name}`).textContent = '📤 Sending...';
-                
-                // Read file as ArrayBuffer
-                const fileBuffer = await file.arrayBuffer();
-                
-                // Encrypt entire file if password is set
-                let dataToSend;
-                if (transferPassword) {
-                    updateStatus('🔒 Encrypting file...', 'connecting');
-                    dataToSend = await encryptData(fileBuffer, transferPassword);
-                    updateStatus('✅ Connected (Password Protected)', 'connected');
-                } else {
-                    dataToSend = new Uint8Array(fileBuffer);
-                }
-                
-                // Send encrypted/raw data in chunks
-                const actualChunks = Math.ceil(dataToSend.length / chunkSize);
-                for (let i = 0; i < actualChunks; i++) {
-                    const start = i * chunkSize;
-                    const end = Math.min(start + chunkSize, dataToSend.length);
-                    const chunk = dataToSend.slice(start, end);
-                    
-                    dataChannel.send(JSON.stringify({
-                        type: 'file-chunk',
-                        chunkIndex: i,
-                        data: Array.from(chunk)
-                    }));
-                    
-                    // Update progress based on original file size
-                    const progress = Math.round((end / file.size) * 100);
-                    
-                    // Small delay to prevent overwhelming
-                    if (i % 10 === 0) await new Promise(resolve => setTimeout(resolve, 1));
-                }
-                
-                // Send completion signal
                 dataChannel.send(JSON.stringify({
-                    type: 'file-end',
-                    name: file.name
+                    type: 'file-chunk',
+                    chunkIndex: i,
+                    data: Array.from(new Uint8Array(arrayBuffer))
                 }));
                 
-                document.getElementById(`status-${file.name}`).textContent = '✅ Sent';
-                
-            } catch (error) {
-                console.error('Error sending file:', error);
-                document.getElementById(`status-${file.name}`).textContent = '❌ Error';
-                
-                if (error.name === 'OperationError') {
-                    updateStatus('❌ Encryption failed - check password', 'disconnected');
-                }
+                // Small delay to prevent overwhelming
+                if (i % 10 === 0) await new Promise(resolve => setTimeout(resolve, 1));
             }
+            
+            // Send completion signal
+            dataChannel.send(JSON.stringify({
+                type: 'file-end',
+                name: file.name
+            }));
+            
+            document.getElementById(`status-${file.name}`).textContent = '✅ Sent';
         }
 
         let incomingFiles = new Map();
@@ -597,19 +488,17 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                         name: message.name,
                         size: message.size,
                         totalChunks: message.totalChunks,
-                        encrypted: message.encrypted,
                         receivedChunks: [],
-                        receivedData: [],
                         progress: 0
                     });
-                    addIncomingFile(message.name, message.size, message.encrypted);
+                    addIncomingFile(message.name, message.size);
                     break;
                     
                 case 'file-chunk':
                     const fileData = incomingFiles.get(getCurrentFileName());
                     if (fileData) {
-                        fileData.receivedData.push(new Uint8Array(message.data));
-                        fileData.progress = (fileData.receivedData.length / fileData.totalChunks) * 100;
+                        fileData.receivedChunks[message.chunkIndex] = new Uint8Array(message.data);
+                        fileData.progress = (Object.keys(fileData.receivedChunks).length / fileData.totalChunks) * 100;
                         updateFileProgress(fileData.name, fileData.progress);
                     }
                     break;
@@ -625,15 +514,12 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             return Array.from(incomingFiles.keys()).pop();
         }
 
-        function addIncomingFile(name, size, encrypted) {
-            const lockIcon = encrypted ? '🔒' : '📄';
-            const encStatus = encrypted ? ' (Encrypted)' : '';
-            
+        function addIncomingFile(name, size) {
             const fileDiv = document.createElement('div');
             fileDiv.className = 'file-info';
             fileDiv.id = `incoming-${name}`;
             fileDiv.innerHTML = `
-                <span>${lockIcon} ${name}${encStatus} (${formatFileSize(size)})</span>
+                <span>📄 ${name} (${formatFileSize(size)})</span>
                 <span id="progress-${name}">📥 0%</span>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill-${name}"></div>
@@ -647,70 +533,32 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             document.getElementById(`progress-fill-${name}`).style.width = `${progress}%`;
         }
 
-        async function completeFileDownload(name) {
+        function completeFileDownload(name) {
             const fileData = incomingFiles.get(name);
             if (!fileData) return;
             
-            try {
-                // Combine all chunks
-                const totalSize = fileData.receivedData.reduce((sum, chunk) => sum + chunk.length, 0);
-                const completeData = new Uint8Array(totalSize);
-                let offset = 0;
-                
-                fileData.receivedData.forEach(chunk => {
-                    completeData.set(chunk, offset);
-                    offset += chunk.length;
-                });
-                
-                let finalData;
-                
-                // Decrypt if encrypted
-                if (fileData.encrypted) {
-                    if (!transferPassword) {
-                        throw new Error('Password required for encrypted file');
-                    }
-                    
-                    document.getElementById(`progress-${name}`).textContent = '🔓 Decrypting...';
-                    updateStatus('🔓 Decrypting file...', 'connecting');
-                    
-                    const decryptedBuffer = await decryptData(completeData, transferPassword);
-                    finalData = new Uint8Array(decryptedBuffer);
-                    
-                    updateStatus('✅ Connected (Password Protected)', 'connected');
-                } else {
-                    finalData = completeData;
-                }
-                
-                // Create download
-                const blob = new Blob([finalData]);
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = name;
-                a.click();
-                URL.revokeObjectURL(url);
-                
-                // Update UI
-                document.getElementById(`progress-${name}`).textContent = '✅ Downloaded';
-                document.getElementById(`progress-fill-${name}`).style.width = '100%';
-                
-            } catch (error) {
-                console.error('Error processing file:', error);
-                document.getElementById(`progress-${name}`).textContent = '❌ Failed';
-                
-                if (error.message.includes('Password') || error.name === 'OperationError') {
-                    updateStatus('❌ Decryption failed - wrong password?', 'disconnected');
-                    
-                    // Prompt for correct password
-                    const correctPassword = prompt('Decryption failed. Please enter the correct password:');
-                    if (correctPassword) {
-                        transferPassword = correctPassword;
-                        // Retry decryption
-                        setTimeout(() => completeFileDownload(name), 100);
-                        return;
-                    }
-                }
-            }
+            // Combine all chunks
+            const totalSize = fileData.receivedChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+            const completeFile = new Uint8Array(totalSize);
+            let offset = 0;
+            
+            fileData.receivedChunks.forEach(chunk => {
+                completeFile.set(chunk, offset);
+                offset += chunk.length;
+            });
+            
+            // Create download
+            const blob = new Blob([completeFile]);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            // Update UI
+            document.getElementById(`progress-${name}`).textContent = '✅ Downloaded';
+            document.getElementById(`progress-fill-${name}`).style.width = '100%';
             
             incomingFiles.delete(name);
         }
@@ -750,15 +598,12 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             dataChannel = null;
             role = null;
             roomId = null;
-            transferPassword = null;
             fileQueue = [];
             currentTransfer = null;
             incomingFiles.clear();
             
             document.getElementById('file-queue').innerHTML = '';
             document.getElementById('incoming-files').innerHTML = '';
-            document.getElementById('password-input').value = '';
-            document.getElementById('receiver-password-input').value = '';
         }
 
         // Check for room parameter in URL
@@ -834,7 +679,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="DirectDrop Lite - Secure P2P File Transfer")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind to")
+    parser.add_argument("--port", type=int, default=8901, help="Port to bind to")
     parser.add_argument("--https", action="store_true", help="Enable HTTPS")
     parser.add_argument("--cert", help="Path to SSL certificate file")
     parser.add_argument("--key", help="Path to SSL private key file")
