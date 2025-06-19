@@ -679,7 +679,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="DirectDrop Lite - Secure P2P File Transfer")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind to")
+    parser.add_argument("--port", type=int, default=8901, help="Port to bind to")
     parser.add_argument("--https", action="store_true", help="Enable HTTPS")
     parser.add_argument("--cert", help="Path to SSL certificate file")
     parser.add_argument("--key", help="Path to SSL private key file")
